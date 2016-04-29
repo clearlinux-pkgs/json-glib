@@ -4,7 +4,7 @@
 #
 Name     : json-glib
 Version  : 1.0.4
-Release  : 4
+Release  : 5
 URL      : http://ftp.gnome.org/pub/GNOME/sources/json-glib/1.0/json-glib-1.0.4.tar.xz
 Source0  : http://ftp.gnome.org/pub/GNOME/sources/json-glib/1.0/json-glib-1.0.4.tar.xz
 Summary  : JSON Parser for GLib
