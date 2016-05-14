@@ -4,18 +4,21 @@
 #
 Name     : json-glib
 Version  : 1.2.0
-Release  : 7
+Release  : 8
 URL      : http://ftp.gnome.org/pub/GNOME/sources/json-glib/1.2/json-glib-1.2.0.tar.xz
 Source0  : http://ftp.gnome.org/pub/GNOME/sources/json-glib/1.2/json-glib-1.2.0.tar.xz
 Summary  : JSON Parser for GLib
 Group    : Development/Tools
-License  : LGPL-2.1
+License  : LGPL-2.0 LGPL-2.1
 Requires: json-glib-bin
 Requires: json-glib-lib
+Requires: json-glib-data
 Requires: json-glib-doc
 Requires: json-glib-locales
 BuildRequires : docbook-xml
 BuildRequires : gettext
+BuildRequires : gobject-introspection
+BuildRequires : gobject-introspection-dev
 BuildRequires : gtk-doc
 BuildRequires : gtk-doc-dev
 BuildRequires : libxml2-dev
@@ -30,9 +33,18 @@ instructions on building JSON-GLib and its dependencies with Visual C++:
 %package bin
 Summary: bin components for the json-glib package.
 Group: Binaries
+Requires: json-glib-data
 
 %description bin
 bin components for the json-glib package.
+
+
+%package data
+Summary: data components for the json-glib package.
+Group: Data
+
+%description data
+data components for the json-glib package.
 
 
 %package dev
@@ -40,6 +52,7 @@ Summary: dev components for the json-glib package.
 Group: Development
 Requires: json-glib-lib
 Requires: json-glib-bin
+Requires: json-glib-data
 Provides: json-glib-devel
 
 %description dev
@@ -57,6 +70,7 @@ doc components for the json-glib package.
 %package lib
 Summary: lib components for the json-glib package.
 Group: Libraries
+Requires: json-glib-data
 
 %description lib
 lib components for the json-glib package.
@@ -96,6 +110,10 @@ rm -rf %{buildroot}
 /usr/bin/json-glib-format
 /usr/bin/json-glib-validate
 
+%files data
+%defattr(-,root,root,-)
+/usr/share/gir-1.0/Json-1.0.gir
+
 %files dev
 %defattr(-,root,root,-)
 /usr/include/json-glib-1.0/json-glib/json-builder.h
@@ -112,6 +130,7 @@ rm -rf %{buildroot}
 /usr/include/json-glib-1.0/json-glib/json-version-macros.h
 /usr/include/json-glib-1.0/json-glib/json-version.h
 /usr/lib64/*.so
+/usr/lib64/girepository-1.0/Json-1.0.typelib
 /usr/lib64/pkgconfig/*.pc
 
 %files doc
