@@ -1,3 +1,213 @@
+commit 5c42cb97cf78c04017a0a95d5a97b615c07c4107
+Author: Emmanuele Bassi <ebassi@gnome.org>
+Date:   Fri Jul 29 10:53:02 2016 +0100
+
+    Release JSON-GLib 1.2.2
+
+ NEWS         | 1 +
+ configure.ac | 4 ++--
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+commit 184391215f3f4f2d2b1435b1f82446c4532fe0a2
+Author: Piotr Drąg <piotrdrag@gmail.com>
+Date:   Sat Jul 23 22:33:15 2016 +0200
+
+    Add Language headers to po files
+    
+    Future versions of gettext will fail if this header is missing.
+
+ po/ca@valencia.po | 2 +-
+ po/es.po          | 2 +-
+ po/ja.po          | 2 +-
+ po/nb.po          | 2 +-
+ po/sl.po          | 2 +-
+ po/sr@latin.po    | 2 +-
+ po/ug.po          | 2 +-
+ po/vi.po          | 1 +
+ po/zh_HK.po       | 2 +-
+ 9 files changed, 9 insertions(+), 8 deletions(-)
+
+commit 9c65113d9a61724b777ef038e789432a85cb7aca
+Author: Anders Jonsson <anders.jonsson@norsjovallen.se>
+Date:   Tue Jul 19 21:28:56 2016 +0000
+
+    Updated Swedish translation
+
+ po/sv.po | 58 +++++++++++++++++++++++++++++-----------------------------
+ 1 file changed, 29 insertions(+), 29 deletions(-)
+
+commit cf30bc6fdb61ab6cb858306dda9f3eb1e66e3586
+Author: Cédric Valmary <cvalmary@yahoo.fr>
+Date:   Mon May 30 19:39:19 2016 +0000
+
+    Updated Occitan translation
+
+ po/oc.po | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit fde984c8845d5b13fa8e0ac5bfdbb4dfc20872b4
+Author: Cédric Valmary <cvalmary@yahoo.fr>
+Date:   Mon May 9 20:54:01 2016 +0000
+
+    Updated Occitan translation
+
+ po/oc.po | 59 ++++++++++++++++++++++++++++++-----------------------------
+ 1 file changed, 30 insertions(+), 29 deletions(-)
+
+commit c2f43c6fb5d702a8037cf28fc9318367c4140b84
+Author: Chun-wei Fan <fanchunwei@src.gnome.org>
+Date:   Mon Mar 7 14:16:44 2016 +0800
+
+    MSVC builds: Look for headers in include/gio-win32-2.0
+    
+    gio.h is going to include headers from include/gio-win32-2.0 at some
+    point, so make sure we look for headers from there as well during the
+    build.
+
+ build/win32/vs10/json-glib-build-defines.props  | 4 ++--
+ build/win32/vs9/json-glib-build-defines.vsprops | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+commit 3a91387198ad5474f5b1af5744fb7496584769b6
+Author: Chun-wei Fan <fanchunwei@src.gnome.org>
+Date:   Mon Jan 4 14:26:49 2016 +0800
+
+    MSVC builds: Improve introspection builds on MSVC
+    
+    This changes the introspection build process on MSVC by moving the
+    source/header list generation from using a Python script to generating
+    the list (and the full command lines for g-ir-scanner and g-ir-compiler)
+    using the common autotools module, to make it more easily maintained.
+
+ build/win32/Makefile.am                      |  34 ++++++--
+ build/win32/detectenv-msvc.mak               |  76 ++++++++++++++++++
+ build/win32/detectenv_msvc.mak               |  65 ---------------
+ build/win32/gen-file-list-jsonglib.py        | 115 ---------------------------
+ build/win32/introspection-msvc.mak           |  79 ++++++++++--------
+ build/win32/json-glib-introspection-msvc.mak |  40 ++--------
+ json-glib/Makefile.am                        |  26 +++++-
+ 7 files changed, 181 insertions(+), 254 deletions(-)
+
+commit 8e80c2ce026421f0f8b50f71a28693e9a8cae535
+Author: Chun-wei Fan <fanchunwei@src.gnome.org>
+Date:   Mon Jan 4 14:02:51 2016 +0800
+
+    MSVC builds: Add support for Visual Studio 2012-2015
+    
+    This adds support for Visual Studio 2012-2015 by making use of the
+    common autotools module to copy the Visual Studio 2010 projects and
+    updating the (few) items in there for providing build support for the
+    newer Visual Studio versions out-of-the-box, as the formats of the
+    project files used in these releases are largely the same.
+
+ build/win32/Makefile.am      |  2 +-
+ build/win32/vs11/Makefile.am | 53 ++++++++++++++++++++++++++++++++++++++++++++
+ build/win32/vs12/Makefile.am | 53 ++++++++++++++++++++++++++++++++++++++++++++
+ build/win32/vs14/Makefile.am | 53 ++++++++++++++++++++++++++++++++++++++++++++
+ configure.ac                 |  3 +++
+ 5 files changed, 163 insertions(+), 1 deletion(-)
+
+commit 5eedb10ae257b48ea4f6650f8b24240a2544b9a6
+Author: Chun-wei Fan <fanchunwei@src.gnome.org>
+Date:   Mon Jan 4 13:57:29 2016 +0800
+
+    build: Clean up MSVC-related items in autotools build files
+    
+    This makes use of the common build/Makefile.msvcproj to create the full
+    Visual Studio 2008/2010 project files from their respective templates,
+    while making the autotools files cleaner.  As an added benefit, this also
+    enables the list of headers to "install" to be filled in automatically
+    during 'make dist', so that we will have to worry less about the addition
+    or removal of public headers.
+
+ build/win32/vs10/Makefile.am                 | 16 +++++++--
+ build/win32/vs10/json-glib-install.props     | 54 ----------------------------
+ build/win32/vs10/json-glib-install.propsin   | 43 ++++++++++++++++++++++
+ build/win32/vs10/json-glib.vcxproj.filtersin |  2 +-
+ build/win32/vs10/json-glib.vcxprojin         |  2 +-
+ build/win32/vs9/Makefile.am                  | 14 ++++++--
+ build/win32/vs9/json-glib-install.vsprops    | 39 --------------------
+ build/win32/vs9/json-glib-install.vspropsin  | 26 ++++++++++++++
+ build/win32/vs9/json-glib.vcprojin           |  2 +-
+ json-glib/Makefile.am                        | 51 ++++++++------------------
+ 10 files changed, 112 insertions(+), 137 deletions(-)
+
+commit d1119d775c5c2c7d630b77ee6855b67f66d92e31
+Author: Chun-wei Fan <fanchunwei@src.gnome.org>
+Date:   Mon Jan 4 13:49:53 2016 +0800
+
+    build: Add common autotools modules for MSVC build files
+    
+    This adds autotools modules that are directly copied from (and shared with)
+    the ones that are in GLib and GObject-introspection, where:
+    
+    Makefile.msvcproj: Creates the complete MSVC 2008/2010 project files for
+                       building the main JSON-GLib DLL and the property sheets
+                       for "installing" JSON-GLib, in particular the headers,
+                       aimed to clean up the json-glib/Makefile.am in particular.
+    
+    Makefile-newvs.am: Copies the MSVC 2010 projects and replace the necessary
+                       items so that we can support Visual Studio 2012-2015 out
+                       of the box.
+    
+    Makefile.msvc-introspection: Creates the full NMake Makefile snippet that
+                                 contains the full command lines for g-ir-scanner
+                                 and g-ir-compiler to build the introspection
+                                 files for JSON-GLib for MSVC builds.
+
+ build/Makefile-newvs.am           |  45 ++++++++++++++
+ build/Makefile.msvc-introspection | 125 ++++++++++++++++++++++++++++++++++++++
+ build/Makefile.msvcproj           | 107 ++++++++++++++++++++++++++++++++
+ 3 files changed, 277 insertions(+)
+
+commit 4c2ad10eda3e2cdc2714358f72882b5ac8cbf34f
+Author: Chun-wei Fan <fanchunwei@src.gnome.org>
+Date:   Tue Apr 19 15:43:53 2016 +0800
+
+    json-types.h: Add missing JSON_AVAILABLE_IN_1_2
+    
+    The json_node_is_immutable() missed an JSON_AVAILABLE_IN_1_2, causing it
+    not to be exported.  Fix this.
+
+ json-glib/json-types.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit 0e88e1cd971ac129a99ed970fdc7ae792016f88d
+Author: Fabio Tomat <f.t.public@gmail.com>
+Date:   Fri Apr 8 08:16:05 2016 +0000
+
+    Updated Friulian translation
+
+ po/fur.po | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+commit aafea9253100f41a592622ab562ae7f69cfbf0dc
+Author: Fabio Tomat <f.t.public@gmail.com>
+Date:   Sat Apr 2 23:32:33 2016 +0000
+
+    Updated Friulian translation
+
+ po/fur.po | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+commit f1df1ad6e0dd929c156da58c0570131e4fafe177
+Author: Fabio Tomat <f.t.public@gmail.com>
+Date:   Wed Mar 23 16:45:53 2016 +0000
+
+    Updated Friulian translation
+
+ po/fur.po | 173 +++++++++++++++++++++++++++++++++++++++++++++++++-------------
+ 1 file changed, 137 insertions(+), 36 deletions(-)
+
+commit b3655eaa245da84c5a6e01f6b65db7c37dc7df3c
+Author: Emmanuele Bassi <ebassi@gnome.org>
+Date:   Tue Mar 22 16:15:39 2016 +0000
+
+    Post-release version bump to 1.2.1
+
+ configure.ac | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
 commit 19f5626b70e72a81dae7ee11b4c3a4d75779a7be
 Author: Emmanuele Bassi <ebassi@gnome.org>
 Date:   Tue Mar 22 16:14:19 2016 +0000
