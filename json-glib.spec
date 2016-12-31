@@ -4,7 +4,7 @@
 #
 Name     : json-glib
 Version  : 1.2.2
-Release  : 9
+Release  : 10
 URL      : http://ftp.gnome.org/pub/GNOME/sources/json-glib/1.2/json-glib-1.2.2.tar.xz
 Source0  : http://ftp.gnome.org/pub/GNOME/sources/json-glib/1.2/json-glib-1.2.2.tar.xz
 Summary  : JSON Parser for GLib
@@ -12,11 +12,15 @@ Group    : Development/Tools
 License  : LGPL-2.1
 Requires: json-glib-bin
 Requires: json-glib-lib
-Requires: json-glib-data
 Requires: json-glib-doc
 Requires: json-glib-locales
 BuildRequires : docbook-xml
+BuildRequires : gcc-dev32
+BuildRequires : gcc-libgcc32
+BuildRequires : gcc-libstdc++32
 BuildRequires : gettext
+BuildRequires : glibc-dev32
+BuildRequires : glibc-libc32
 BuildRequires : gobject-introspection
 BuildRequires : gobject-introspection-dev
 BuildRequires : gtk-doc
@@ -24,6 +28,7 @@ BuildRequires : gtk-doc-dev
 BuildRequires : libxml2-dev
 BuildRequires : libxslt-bin
 BuildRequires : perl(XML::Parser)
+BuildRequires : pkgconfig(32gobject-2.0)
 BuildRequires : pkgconfig(gobject-2.0)
 
 %description
@@ -33,18 +38,9 @@ instructions on building JSON-GLib and its dependencies with Visual C++:
 %package bin
 Summary: bin components for the json-glib package.
 Group: Binaries
-Requires: json-glib-data
 
 %description bin
 bin components for the json-glib package.
-
-
-%package data
-Summary: data components for the json-glib package.
-Group: Data
-
-%description data
-data components for the json-glib package.
 
 
 %package dev
@@ -52,11 +48,21 @@ Summary: dev components for the json-glib package.
 Group: Development
 Requires: json-glib-lib
 Requires: json-glib-bin
-Requires: json-glib-data
 Provides: json-glib-devel
 
 %description dev
 dev components for the json-glib package.
+
+
+%package dev32
+Summary: dev32 components for the json-glib package.
+Group: Default
+Requires: json-glib-lib32
+Requires: json-glib-bin
+Requires: json-glib-dev
+
+%description dev32
+dev32 components for the json-glib package.
 
 
 %package doc
@@ -70,10 +76,17 @@ doc components for the json-glib package.
 %package lib
 Summary: lib components for the json-glib package.
 Group: Libraries
-Requires: json-glib-data
 
 %description lib
 lib components for the json-glib package.
+
+
+%package lib32
+Summary: lib32 components for the json-glib package.
+Group: Default
+
+%description lib32
+lib32 components for the json-glib package.
 
 
 %package locales
@@ -86,12 +99,24 @@ locales components for the json-glib package.
 
 %prep
 %setup -q -n json-glib-1.2.2
+pushd ..
+cp -a json-glib-1.2.2 build32
+popd
 
 %build
 export LANG=C
+export SOURCE_DATE_EPOCH=1483228074
 %configure --disable-static
 make V=1  %{?_smp_mflags}
 
+pushd ../build32/
+export PKG_CONFIG_PATH="/usr/lib32/pkgconfig"
+export CFLAGS="$CFLAGS -m32"
+export CXXFLAGS="$CXXFLAGS -m32"
+export LDFLAGS="$LDFLAGS -m32"
+%configure --disable-static    --libdir=/usr/lib32 --build=i686-generic-linux-gnu --host=i686-generic-linux-gnu --target=i686-clr-linux-gnu
+make V=1  %{?_smp_mflags}
+popd
 %check
 export LANG=C
 export http_proxy=http://127.0.0.1:9/
@@ -101,20 +126,26 @@ make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
 rm -rf %{buildroot}
+pushd ../build32/
+%make_install32
+if [ -d  %{buildroot}/usr/lib32/pkgconfig ]
+then
+pushd %{buildroot}/usr/lib32/pkgconfig
+for i in *.pc ; do ln -s $i 32$i ; done
+popd
+fi
+popd
 %make_install
 %find_lang json-glib-1.0
 
 %files
 %defattr(-,root,root,-)
+/usr/lib32/girepository-1.0/Json-1.0.typelib
 
 %files bin
 %defattr(-,root,root,-)
 /usr/bin/json-glib-format
 /usr/bin/json-glib-validate
-
-%files data
-%defattr(-,root,root,-)
-/usr/share/gir-1.0/Json-1.0.gir
 
 %files dev
 %defattr(-,root,root,-)
@@ -131,9 +162,16 @@ rm -rf %{buildroot}
 /usr/include/json-glib-1.0/json-glib/json-utils.h
 /usr/include/json-glib-1.0/json-glib/json-version-macros.h
 /usr/include/json-glib-1.0/json-glib/json-version.h
-/usr/lib64/*.so
 /usr/lib64/girepository-1.0/Json-1.0.typelib
-/usr/lib64/pkgconfig/*.pc
+/usr/lib64/libjson-glib-1.0.so
+/usr/lib64/pkgconfig/json-glib-1.0.pc
+/usr/share/gir-1.0/*.gir
+
+%files dev32
+%defattr(-,root,root,-)
+/usr/lib32/libjson-glib-1.0.so
+/usr/lib32/pkgconfig/32json-glib-1.0.pc
+/usr/lib32/pkgconfig/json-glib-1.0.pc
 
 %files doc
 %defattr(-,root,root,-)
@@ -190,8 +228,14 @@ rm -rf %{buildroot}
 
 %files lib
 %defattr(-,root,root,-)
-/usr/lib64/*.so.*
+/usr/lib64/libjson-glib-1.0.so.0
+/usr/lib64/libjson-glib-1.0.so.0.200.2
 
-%files locales -f json-glib-1.0.lang 
+%files lib32
+%defattr(-,root,root,-)
+/usr/lib32/libjson-glib-1.0.so.0
+/usr/lib32/libjson-glib-1.0.so.0.200.2
+
+%files locales -f json-glib-1.0.lang
 %defattr(-,root,root,-)
 
