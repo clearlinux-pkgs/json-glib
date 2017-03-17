@@ -4,9 +4,9 @@
 #
 Name     : json-glib
 Version  : 1.2.2
-Release  : 11
-URL      : http://ftp.gnome.org/pub/GNOME/sources/json-glib/1.2/json-glib-1.2.2.tar.xz
-Source0  : http://ftp.gnome.org/pub/GNOME/sources/json-glib/1.2/json-glib-1.2.2.tar.xz
+Release  : 12
+URL      : https://download.gnome.org/sources/json-glib/1.2/json-glib-1.2.2.tar.xz
+Source0  : https://download.gnome.org/sources/json-glib/1.2/json-glib-1.2.2.tar.xz
 Summary  : JSON Parser for GLib
 Group    : Development/Tools
 License  : LGPL-2.1
@@ -105,7 +105,7 @@ popd
 
 %build
 export LANG=C
-export SOURCE_DATE_EPOCH=1489768569
+export SOURCE_DATE_EPOCH=1489773949
 %configure --disable-static
 make V=1  %{?_smp_mflags}
 
@@ -125,7 +125,7 @@ export no_proxy=localhost
 make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1489768569
+export SOURCE_DATE_EPOCH=1489773949
 rm -rf %{buildroot}
 pushd ../build32/
 %make_install32
