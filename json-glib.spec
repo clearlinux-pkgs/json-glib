@@ -4,13 +4,14 @@
 #
 Name     : json-glib
 Version  : 1.2.8
-Release  : 15
+Release  : 16
 URL      : https://download.gnome.org/sources/json-glib/1.2/json-glib-1.2.8.tar.xz
 Source0  : https://download.gnome.org/sources/json-glib/1.2/json-glib-1.2.8.tar.xz
 Summary  : JSON Parser for GLib
 Group    : Development/Tools
 License  : LGPL-2.1
 Requires: json-glib-bin
+Requires: json-glib-data
 Requires: json-glib-lib
 Requires: json-glib-doc
 Requires: json-glib-locales
@@ -38,9 +39,18 @@ instructions on building JSON-GLib and its dependencies with Visual C++:
 %package bin
 Summary: bin components for the json-glib package.
 Group: Binaries
+Requires: json-glib-data
 
 %description bin
 bin components for the json-glib package.
+
+
+%package data
+Summary: data components for the json-glib package.
+Group: Data
+
+%description data
+data components for the json-glib package.
 
 
 %package dev
@@ -48,6 +58,7 @@ Summary: dev components for the json-glib package.
 Group: Development
 Requires: json-glib-lib
 Requires: json-glib-bin
+Requires: json-glib-data
 Provides: json-glib-devel
 
 %description dev
@@ -59,6 +70,7 @@ Summary: dev32 components for the json-glib package.
 Group: Default
 Requires: json-glib-lib32
 Requires: json-glib-bin
+Requires: json-glib-data
 Requires: json-glib-dev
 
 %description dev32
@@ -76,6 +88,7 @@ doc components for the json-glib package.
 %package lib
 Summary: lib components for the json-glib package.
 Group: Libraries
+Requires: json-glib-data
 
 %description lib
 lib components for the json-glib package.
@@ -84,6 +97,7 @@ lib components for the json-glib package.
 %package lib32
 Summary: lib32 components for the json-glib package.
 Group: Default
+Requires: json-glib-data
 
 %description lib32
 lib32 components for the json-glib package.
@@ -105,7 +119,7 @@ popd
 
 %build
 export LANG=C
-export SOURCE_DATE_EPOCH=1490373743
+export SOURCE_DATE_EPOCH=1491322729
 %configure --disable-static
 make V=1  %{?_smp_mflags}
 
@@ -125,7 +139,7 @@ export no_proxy=localhost
 make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1490373743
+export SOURCE_DATE_EPOCH=1491322729
 rm -rf %{buildroot}
 pushd ../build32/
 %make_install32
@@ -148,6 +162,11 @@ popd
 /usr/bin/json-glib-format
 /usr/bin/json-glib-validate
 
+%files data
+%defattr(-,root,root,-)
+/usr/lib64/girepository-1.0/Json-1.0.typelib
+/usr/share/gir-1.0/*.gir
+
 %files dev
 %defattr(-,root,root,-)
 /usr/include/json-glib-1.0/json-glib/json-builder.h
@@ -163,10 +182,8 @@ popd
 /usr/include/json-glib-1.0/json-glib/json-utils.h
 /usr/include/json-glib-1.0/json-glib/json-version-macros.h
 /usr/include/json-glib-1.0/json-glib/json-version.h
-/usr/lib64/girepository-1.0/Json-1.0.typelib
 /usr/lib64/libjson-glib-1.0.so
 /usr/lib64/pkgconfig/json-glib-1.0.pc
-/usr/share/gir-1.0/*.gir
 
 %files dev32
 %defattr(-,root,root,-)
