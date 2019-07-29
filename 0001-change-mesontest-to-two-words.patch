@@ -1,0 +1,40 @@
+From 0b590223223de39763f08f4a6d4b6cfec4e66d7c Mon Sep 17 00:00:00 2001
+From: Tan Shen Joon <shen.joon.tan@intel.com>
+Date: Mon, 29 Jul 2019 11:26:54 +0800
+Subject: [PATCH] change mesontest to two words
+
+The current master version in json-glib upstream has changed
+the build flow and have not released a new version.
+Hence, we will continue to use v1.4.4 with this patch to
+enable the build to work with latest meson which deprecates
+the mesontest feature and user should now use 'meson test'
+
+Signed-off-by: Tan Shen Joon <shen.joon.tan@intel.com>
+---
+ configure | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/configure b/configure
+index 5fe09a6..0eecfbd 100755
+--- a/configure
++++ b/configure
+@@ -52,7 +52,6 @@ sanitycheck() {
+ }
+ 
+ sanitycheck MESON 'meson'
+-sanitycheck MESONTEST 'mesontest'
+ sanitycheck NINJA 'ninja' 'ninja-build'
+ 
+ enable_docs='-Ddocs=false'
+@@ -118,7 +117,7 @@ install:
+ 	DESTDIR="\$(DESTDIR)" ${NINJA} ${NINJA_OPT} install
+ 
+ check:
+-	${MESONTEST} ${NINJA_OPT}
++	${MESON} test ${NINJA_OPT}
+ END
+ 
+ echo "Summary:"
+-- 
+2.22.0
+

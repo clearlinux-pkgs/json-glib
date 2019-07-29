@@ -4,17 +4,18 @@
 #
 Name     : json-glib
 Version  : 1.4.4
-Release  : 23
+Release  : 24
 URL      : https://download.gnome.org/sources/json-glib/1.4/json-glib-1.4.4.tar.xz
 Source0  : https://download.gnome.org/sources/json-glib/1.4/json-glib-1.4.4.tar.xz
 Summary  : No detailed summary available
 Group    : Development/Tools
 License  : LGPL-2.1
-Requires: json-glib-bin
-Requires: json-glib-data
-Requires: json-glib-lib
-Requires: json-glib-license
-Requires: json-glib-locales
+Requires: json-glib-bin = %{version}-%{release}
+Requires: json-glib-data = %{version}-%{release}
+Requires: json-glib-lib = %{version}-%{release}
+Requires: json-glib-libexec = %{version}-%{release}
+Requires: json-glib-license = %{version}-%{release}
+Requires: json-glib-locales = %{version}-%{release}
 BuildRequires : buildreq-gnome
 BuildRequires : buildreq-meson
 BuildRequires : gcc-dev32
@@ -26,6 +27,7 @@ BuildRequires : glibc-dev32
 BuildRequires : glibc-libc32
 BuildRequires : gobject-introspection
 BuildRequires : gobject-introspection-dev
+Patch1: 0001-change-mesontest-to-two-words.patch
 
 %description
 JSON-GLib
@@ -34,8 +36,9 @@ JSON-GLib
 %package bin
 Summary: bin components for the json-glib package.
 Group: Binaries
-Requires: json-glib-data
-Requires: json-glib-license
+Requires: json-glib-data = %{version}-%{release}
+Requires: json-glib-libexec = %{version}-%{release}
+Requires: json-glib-license = %{version}-%{release}
 
 %description bin
 bin components for the json-glib package.
@@ -52,10 +55,11 @@ data components for the json-glib package.
 %package dev
 Summary: dev components for the json-glib package.
 Group: Development
-Requires: json-glib-lib
-Requires: json-glib-bin
-Requires: json-glib-data
-Provides: json-glib-devel
+Requires: json-glib-lib = %{version}-%{release}
+Requires: json-glib-bin = %{version}-%{release}
+Requires: json-glib-data = %{version}-%{release}
+Provides: json-glib-devel = %{version}-%{release}
+Requires: json-glib = %{version}-%{release}
 
 %description dev
 dev components for the json-glib package.
@@ -64,10 +68,10 @@ dev components for the json-glib package.
 %package dev32
 Summary: dev32 components for the json-glib package.
 Group: Default
-Requires: json-glib-lib32
-Requires: json-glib-bin
-Requires: json-glib-data
-Requires: json-glib-dev
+Requires: json-glib-lib32 = %{version}-%{release}
+Requires: json-glib-bin = %{version}-%{release}
+Requires: json-glib-data = %{version}-%{release}
+Requires: json-glib-dev = %{version}-%{release}
 
 %description dev32
 dev32 components for the json-glib package.
@@ -76,8 +80,9 @@ dev32 components for the json-glib package.
 %package lib
 Summary: lib components for the json-glib package.
 Group: Libraries
-Requires: json-glib-data
-Requires: json-glib-license
+Requires: json-glib-data = %{version}-%{release}
+Requires: json-glib-libexec = %{version}-%{release}
+Requires: json-glib-license = %{version}-%{release}
 
 %description lib
 lib components for the json-glib package.
@@ -86,11 +91,20 @@ lib components for the json-glib package.
 %package lib32
 Summary: lib32 components for the json-glib package.
 Group: Default
-Requires: json-glib-data
-Requires: json-glib-license
+Requires: json-glib-data = %{version}-%{release}
+Requires: json-glib-license = %{version}-%{release}
 
 %description lib32
 lib32 components for the json-glib package.
+
+
+%package libexec
+Summary: libexec components for the json-glib package.
+Group: Default
+Requires: json-glib-license = %{version}-%{release}
+
+%description libexec
+libexec components for the json-glib package.
 
 
 %package license
@@ -111,6 +125,7 @@ locales components for the json-glib package.
 
 %prep
 %setup -q -n json-glib-1.4.4
+%patch1 -p1
 pushd ..
 cp -a json-glib-1.4.4 build32
 popd
@@ -119,24 +134,30 @@ popd
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
-export LANG=C
-export SOURCE_DATE_EPOCH=1537235542
+export LANG=C.UTF-8
+export SOURCE_DATE_EPOCH=1564379932
+export GCC_IGNORE_WERROR=1
+export CFLAGS="$CFLAGS -fno-lto "
+export FCFLAGS="$CFLAGS -fno-lto "
+export FFLAGS="$CFLAGS -fno-lto "
+export CXXFLAGS="$CXXFLAGS -fno-lto "
 %configure --disable-static
 make  %{?_smp_mflags}
 
 pushd ../build32/
 export PKG_CONFIG_PATH="/usr/lib32/pkgconfig"
-export CFLAGS="$CFLAGS -m32"
-export CXXFLAGS="$CXXFLAGS -m32"
-export LDFLAGS="$LDFLAGS -m32"
+export ASFLAGS="${ASFLAGS}${ASFLAGS:+ }--32"
+export CFLAGS="${CFLAGS}${CFLAGS:+ }-m32"
+export CXXFLAGS="${CXXFLAGS}${CXXFLAGS:+ }-m32"
+export LDFLAGS="${LDFLAGS}${LDFLAGS:+ }-m32"
 %configure --disable-static    --libdir=/usr/lib32 --build=i686-generic-linux-gnu --host=i686-generic-linux-gnu --target=i686-clr-linux-gnu
 make  %{?_smp_mflags}
 popd
 %install
-export SOURCE_DATE_EPOCH=1537235542
+export SOURCE_DATE_EPOCH=1564379932
 rm -rf %{buildroot}
-mkdir -p %{buildroot}/usr/share/doc/json-glib
-cp COPYING %{buildroot}/usr/share/doc/json-glib/COPYING
+mkdir -p %{buildroot}/usr/share/package-licenses/json-glib
+cp COPYING %{buildroot}/usr/share/package-licenses/json-glib/COPYING
 pushd ../build32/
 %make_install32
 if [ -d  %{buildroot}/usr/lib32/pkgconfig ]
@@ -157,21 +178,6 @@ popd
 %defattr(-,root,root,-)
 /usr/bin/json-glib-format
 /usr/bin/json-glib-validate
-/usr/libexec/installed-tests/json-glib-1.0/array
-/usr/libexec/installed-tests/json-glib-1.0/boxed
-/usr/libexec/installed-tests/json-glib-1.0/builder
-/usr/libexec/installed-tests/json-glib-1.0/generator
-/usr/libexec/installed-tests/json-glib-1.0/gvariant
-/usr/libexec/installed-tests/json-glib-1.0/invalid
-/usr/libexec/installed-tests/json-glib-1.0/node
-/usr/libexec/installed-tests/json-glib-1.0/object
-/usr/libexec/installed-tests/json-glib-1.0/parser
-/usr/libexec/installed-tests/json-glib-1.0/path
-/usr/libexec/installed-tests/json-glib-1.0/reader
-/usr/libexec/installed-tests/json-glib-1.0/serialize-complex
-/usr/libexec/installed-tests/json-glib-1.0/serialize-full
-/usr/libexec/installed-tests/json-glib-1.0/serialize-simple
-/usr/libexec/installed-tests/json-glib-1.0/stream-load.json
 
 %files data
 %defattr(-,root,root,-)
@@ -226,9 +232,27 @@ popd
 /usr/lib32/libjson-glib-1.0.so.0
 /usr/lib32/libjson-glib-1.0.so.0.400.4
 
-%files license
+%files libexec
 %defattr(-,root,root,-)
-/usr/share/doc/json-glib/COPYING
+/usr/libexec/installed-tests/json-glib-1.0/array
+/usr/libexec/installed-tests/json-glib-1.0/boxed
+/usr/libexec/installed-tests/json-glib-1.0/builder
+/usr/libexec/installed-tests/json-glib-1.0/generator
+/usr/libexec/installed-tests/json-glib-1.0/gvariant
+/usr/libexec/installed-tests/json-glib-1.0/invalid
+/usr/libexec/installed-tests/json-glib-1.0/node
+/usr/libexec/installed-tests/json-glib-1.0/object
+/usr/libexec/installed-tests/json-glib-1.0/parser
+/usr/libexec/installed-tests/json-glib-1.0/path
+/usr/libexec/installed-tests/json-glib-1.0/reader
+/usr/libexec/installed-tests/json-glib-1.0/serialize-complex
+/usr/libexec/installed-tests/json-glib-1.0/serialize-full
+/usr/libexec/installed-tests/json-glib-1.0/serialize-simple
+/usr/libexec/installed-tests/json-glib-1.0/stream-load.json
+
+%files license
+%defattr(0644,root,root,0755)
+/usr/share/package-licenses/json-glib/COPYING
 
 %files locales -f json-glib-1.0.lang
 %defattr(-,root,root,-)
