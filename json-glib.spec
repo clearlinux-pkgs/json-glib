@@ -4,7 +4,7 @@
 #
 Name     : json-glib
 Version  : 1.4.4
-Release  : 24
+Release  : 25
 URL      : https://download.gnome.org/sources/json-glib/1.4/json-glib-1.4.4.tar.xz
 Source0  : https://download.gnome.org/sources/json-glib/1.4/json-glib-1.4.4.tar.xz
 Summary  : No detailed summary available
@@ -135,7 +135,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1564379932
+export SOURCE_DATE_EPOCH=1568861312
 export GCC_IGNORE_WERROR=1
 export CFLAGS="$CFLAGS -fno-lto "
 export FCFLAGS="$CFLAGS -fno-lto "
@@ -147,14 +147,14 @@ make  %{?_smp_mflags}
 pushd ../build32/
 export PKG_CONFIG_PATH="/usr/lib32/pkgconfig"
 export ASFLAGS="${ASFLAGS}${ASFLAGS:+ }--32"
-export CFLAGS="${CFLAGS}${CFLAGS:+ }-m32"
-export CXXFLAGS="${CXXFLAGS}${CXXFLAGS:+ }-m32"
-export LDFLAGS="${LDFLAGS}${LDFLAGS:+ }-m32"
+export CFLAGS="${CFLAGS}${CFLAGS:+ }-m32 -mstackrealign"
+export CXXFLAGS="${CXXFLAGS}${CXXFLAGS:+ }-m32 -mstackrealign"
+export LDFLAGS="${LDFLAGS}${LDFLAGS:+ }-m32 -mstackrealign"
 %configure --disable-static    --libdir=/usr/lib32 --build=i686-generic-linux-gnu --host=i686-generic-linux-gnu --target=i686-clr-linux-gnu
 make  %{?_smp_mflags}
 popd
 %install
-export SOURCE_DATE_EPOCH=1564379932
+export SOURCE_DATE_EPOCH=1568861312
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/json-glib
 cp COPYING %{buildroot}/usr/share/package-licenses/json-glib/COPYING
