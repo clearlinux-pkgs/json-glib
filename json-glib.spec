@@ -4,7 +4,7 @@
 #
 Name     : json-glib
 Version  : 1.6.0
-Release  : 29
+Release  : 30
 URL      : https://download.gnome.org/sources/json-glib/1.6/json-glib-1.6.0.tar.xz
 Source0  : https://download.gnome.org/sources/json-glib/1.6/json-glib-1.6.0.tar.xz
 Summary  : No detailed summary available
