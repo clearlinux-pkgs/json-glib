@@ -4,7 +4,7 @@
 #
 Name     : json-glib
 Version  : 1.6.6
-Release  : 33
+Release  : 34
 URL      : https://download.gnome.org/sources/json-glib/1.6/json-glib-1.6.6.tar.xz
 Source0  : https://download.gnome.org/sources/json-glib/1.6/json-glib-1.6.6.tar.xz
 Summary  : GObject-Introspection based documentation generator
