@@ -4,7 +4,7 @@
 #
 Name     : json-glib
 Version  : 1.6.6
-Release  : 35
+Release  : 36
 URL      : https://download.gnome.org/sources/json-glib/1.6/json-glib-1.6.6.tar.xz
 Source0  : https://download.gnome.org/sources/json-glib/1.6/json-glib-1.6.6.tar.xz
 Summary  : GObject-Introspection based documentation generator
@@ -20,6 +20,14 @@ BuildRequires : buildreq-gnome
 BuildRequires : buildreq-meson
 BuildRequires : glib-dev
 BuildRequires : gobject-introspection-dev
+BuildRequires : pypi(jinja2)
+BuildRequires : pypi(markdown)
+BuildRequires : pypi(markupsafe)
+BuildRequires : pypi(pygments)
+BuildRequires : pypi(setuptools)
+BuildRequires : pypi(toml)
+BuildRequires : pypi(typogrify)
+BuildRequires : pypi(wheel)
 
 %description
 JSON-GLib
@@ -100,7 +108,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1629758884
+export SOURCE_DATE_EPOCH=1664156248
 export GCC_IGNORE_WERROR=1
 export CFLAGS="$CFLAGS -fno-lto "
 export FCFLAGS="$FFLAGS -fno-lto "
@@ -111,13 +119,13 @@ ninja -v -C builddir
 
 %install
 mkdir -p %{buildroot}/usr/share/package-licenses/json-glib
-cp %{_builddir}/json-glib-1.6.6/COPYING %{buildroot}/usr/share/package-licenses/json-glib/e60c2e780886f95df9c9ee36992b8edabec00bcc
-cp %{_builddir}/json-glib-1.6.6/subprojects/gi-docgen/LICENSES/Apache-2.0.txt %{buildroot}/usr/share/package-licenses/json-glib/2b8b815229aa8a61e483fb4ba0588b8b6c491890
-cp %{_builddir}/json-glib-1.6.6/subprojects/gi-docgen/LICENSES/CC-BY-SA-3.0.txt %{buildroot}/usr/share/package-licenses/json-glib/fb41626a3005c2b6e14b8b3f5d9d0b19b5faaa51
-cp %{_builddir}/json-glib-1.6.6/subprojects/gi-docgen/LICENSES/CC0-1.0.txt %{buildroot}/usr/share/package-licenses/json-glib/8287b608d3fa40ef401339fd907ca1260c964123
-cp %{_builddir}/json-glib-1.6.6/subprojects/gi-docgen/LICENSES/GPL-3.0-or-later.txt %{buildroot}/usr/share/package-licenses/json-glib/31a3d460bb3c7d98845187c716a30db81c44b615
-cp %{_builddir}/json-glib-1.6.6/subprojects/gi-docgen/LICENSES/MIT.txt %{buildroot}/usr/share/package-licenses/json-glib/220906dfcc3d3b7f4e18cf8a22454c628ca0ea2e
-cp %{_builddir}/json-glib-1.6.6/subprojects/gi-docgen/LICENSES/OFL-1.1.txt %{buildroot}/usr/share/package-licenses/json-glib/8b8a351a8476e37a2c4d398eb1e6c8403f487ea4
+cp %{_builddir}/json-glib-%{version}/COPYING %{buildroot}/usr/share/package-licenses/json-glib/e60c2e780886f95df9c9ee36992b8edabec00bcc || :
+cp %{_builddir}/json-glib-%{version}/subprojects/gi-docgen/LICENSES/Apache-2.0.txt %{buildroot}/usr/share/package-licenses/json-glib/2b8b815229aa8a61e483fb4ba0588b8b6c491890 || :
+cp %{_builddir}/json-glib-%{version}/subprojects/gi-docgen/LICENSES/CC-BY-SA-3.0.txt %{buildroot}/usr/share/package-licenses/json-glib/fb41626a3005c2b6e14b8b3f5d9d0b19b5faaa51 || :
+cp %{_builddir}/json-glib-%{version}/subprojects/gi-docgen/LICENSES/CC0-1.0.txt %{buildroot}/usr/share/package-licenses/json-glib/8287b608d3fa40ef401339fd907ca1260c964123 || :
+cp %{_builddir}/json-glib-%{version}/subprojects/gi-docgen/LICENSES/GPL-3.0-or-later.txt %{buildroot}/usr/share/package-licenses/json-glib/31a3d460bb3c7d98845187c716a30db81c44b615 || :
+cp %{_builddir}/json-glib-%{version}/subprojects/gi-docgen/LICENSES/MIT.txt %{buildroot}/usr/share/package-licenses/json-glib/220906dfcc3d3b7f4e18cf8a22454c628ca0ea2e || :
+cp %{_builddir}/json-glib-%{version}/subprojects/gi-docgen/LICENSES/OFL-1.1.txt %{buildroot}/usr/share/package-licenses/json-glib/8b8a351a8476e37a2c4d398eb1e6c8403f487ea4 || :
 DESTDIR=%{buildroot} ninja -C builddir install
 %find_lang json-glib-1.0
 
