@@ -4,13 +4,13 @@
 # Using build pattern: meson
 #
 Name     : json-glib
-Version  : 1.6.6
-Release  : 37
-URL      : https://download.gnome.org/sources/json-glib/1.6/json-glib-1.6.6.tar.xz
-Source0  : https://download.gnome.org/sources/json-glib/1.6/json-glib-1.6.6.tar.xz
-Summary  : GObject-Introspection based documentation generator
+Version  : 1.8.0
+Release  : 38
+URL      : https://download.gnome.org/sources/json-glib/1.8/json-glib-1.8.0.tar.xz
+Source0  : https://download.gnome.org/sources/json-glib/1.8/json-glib-1.8.0.tar.xz
+Summary  : No detailed summary available
 Group    : Development/Tools
-License  : Apache-2.0 CC-BY-SA-3.0 CC0-1.0 GPL-3.0 LGPL-2.1 MIT OFL-1.1
+License  : LGPL-2.1
 Requires: json-glib-bin = %{version}-%{release}
 Requires: json-glib-data = %{version}-%{release}
 Requires: json-glib-lib = %{version}-%{release}
@@ -95,40 +95,43 @@ tests components for the json-glib package.
 
 
 %prep
-%setup -q -n json-glib-1.6.6
-cd %{_builddir}/json-glib-1.6.6
+%setup -q -n json-glib-1.8.0
+cd %{_builddir}/json-glib-1.8.0
+pushd ..
+cp -a json-glib-1.8.0 buildavx2
+popd
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1680036626
+export SOURCE_DATE_EPOCH=1695660377
 export GCC_IGNORE_WERROR=1
-export CFLAGS="$CFLAGS -fdebug-types-section -femit-struct-debug-baseonly -fno-lto -g1 -gno-column-info -gno-variable-location-views -gz "
-export FCFLAGS="$FFLAGS -fdebug-types-section -femit-struct-debug-baseonly -fno-lto -g1 -gno-column-info -gno-variable-location-views -gz "
-export FFLAGS="$FFLAGS -fdebug-types-section -femit-struct-debug-baseonly -fno-lto -g1 -gno-column-info -gno-variable-location-views -gz "
-export CXXFLAGS="$CXXFLAGS -fdebug-types-section -femit-struct-debug-baseonly -fno-lto -g1 -gno-column-info -gno-variable-location-views -gz "
+export CFLAGS="$CFLAGS -fdebug-types-section -femit-struct-debug-baseonly -fno-lto -g1 -gno-column-info -gno-variable-location-views -gz=zstd "
+export FCFLAGS="$FFLAGS -fdebug-types-section -femit-struct-debug-baseonly -fno-lto -g1 -gno-column-info -gno-variable-location-views -gz=zstd "
+export FFLAGS="$FFLAGS -fdebug-types-section -femit-struct-debug-baseonly -fno-lto -g1 -gno-column-info -gno-variable-location-views -gz=zstd "
+export CXXFLAGS="$CXXFLAGS -fdebug-types-section -femit-struct-debug-baseonly -fno-lto -g1 -gno-column-info -gno-variable-location-views -gz=zstd "
 CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" LDFLAGS="$LDFLAGS" meson --libdir=lib64 --prefix=/usr --buildtype=plain   builddir
 ninja -v -C builddir
+CFLAGS="$CFLAGS -m64 -march=x86-64-v3 -Wl,-z,x86-64-v3 -O3" CXXFLAGS="$CXXFLAGS -m64 -march=x86-64-v3 -Wl,-z,x86-64-v3 " LDFLAGS="$LDFLAGS -m64 -march=x86-64-v3" meson --libdir=lib64 --prefix=/usr --buildtype=plain   builddiravx2
+ninja -v -C builddiravx2
 
 %install
 mkdir -p %{buildroot}/usr/share/package-licenses/json-glib
 cp %{_builddir}/json-glib-%{version}/COPYING %{buildroot}/usr/share/package-licenses/json-glib/e60c2e780886f95df9c9ee36992b8edabec00bcc || :
-cp %{_builddir}/json-glib-%{version}/subprojects/gi-docgen/LICENSES/Apache-2.0.txt %{buildroot}/usr/share/package-licenses/json-glib/2b8b815229aa8a61e483fb4ba0588b8b6c491890 || :
-cp %{_builddir}/json-glib-%{version}/subprojects/gi-docgen/LICENSES/CC-BY-SA-3.0.txt %{buildroot}/usr/share/package-licenses/json-glib/fb41626a3005c2b6e14b8b3f5d9d0b19b5faaa51 || :
-cp %{_builddir}/json-glib-%{version}/subprojects/gi-docgen/LICENSES/CC0-1.0.txt %{buildroot}/usr/share/package-licenses/json-glib/8287b608d3fa40ef401339fd907ca1260c964123 || :
-cp %{_builddir}/json-glib-%{version}/subprojects/gi-docgen/LICENSES/GPL-3.0-or-later.txt %{buildroot}/usr/share/package-licenses/json-glib/31a3d460bb3c7d98845187c716a30db81c44b615 || :
-cp %{_builddir}/json-glib-%{version}/subprojects/gi-docgen/LICENSES/MIT.txt %{buildroot}/usr/share/package-licenses/json-glib/220906dfcc3d3b7f4e18cf8a22454c628ca0ea2e || :
-cp %{_builddir}/json-glib-%{version}/subprojects/gi-docgen/LICENSES/OFL-1.1.txt %{buildroot}/usr/share/package-licenses/json-glib/8b8a351a8476e37a2c4d398eb1e6c8403f487ea4 || :
+DESTDIR=%{buildroot}-v3 ninja -C builddiravx2 install
 DESTDIR=%{buildroot} ninja -C builddir install
 %find_lang json-glib-1.0
+/usr/bin/elf-move.py avx2 %{buildroot}-v3 %{buildroot} %{buildroot}/usr/share/clear/filemap/filemap-%{name}
 
 %files
 %defattr(-,root,root,-)
 
 %files bin
 %defattr(-,root,root,-)
+/V3/usr/bin/json-glib-format
+/V3/usr/bin/json-glib-validate
 /usr/bin/json-glib-format
 /usr/bin/json-glib-validate
 
@@ -157,21 +160,30 @@ DESTDIR=%{buildroot} ninja -C builddir install
 
 %files lib
 %defattr(-,root,root,-)
+/V3/usr/lib64/libjson-glib-1.0.so.0.800.0
 /usr/lib64/libjson-glib-1.0.so.0
-/usr/lib64/libjson-glib-1.0.so.0.600.6
+/usr/lib64/libjson-glib-1.0.so.0.800.0
 
 %files license
 %defattr(0644,root,root,0755)
-/usr/share/package-licenses/json-glib/220906dfcc3d3b7f4e18cf8a22454c628ca0ea2e
-/usr/share/package-licenses/json-glib/2b8b815229aa8a61e483fb4ba0588b8b6c491890
-/usr/share/package-licenses/json-glib/31a3d460bb3c7d98845187c716a30db81c44b615
-/usr/share/package-licenses/json-glib/8287b608d3fa40ef401339fd907ca1260c964123
-/usr/share/package-licenses/json-glib/8b8a351a8476e37a2c4d398eb1e6c8403f487ea4
 /usr/share/package-licenses/json-glib/e60c2e780886f95df9c9ee36992b8edabec00bcc
-/usr/share/package-licenses/json-glib/fb41626a3005c2b6e14b8b3f5d9d0b19b5faaa51
 
 %files tests
 %defattr(-,root,root,-)
+/V3/usr/libexec/installed-tests/json-glib-1.0/array
+/V3/usr/libexec/installed-tests/json-glib-1.0/boxed
+/V3/usr/libexec/installed-tests/json-glib-1.0/builder
+/V3/usr/libexec/installed-tests/json-glib-1.0/generator
+/V3/usr/libexec/installed-tests/json-glib-1.0/gvariant
+/V3/usr/libexec/installed-tests/json-glib-1.0/invalid
+/V3/usr/libexec/installed-tests/json-glib-1.0/node
+/V3/usr/libexec/installed-tests/json-glib-1.0/object
+/V3/usr/libexec/installed-tests/json-glib-1.0/parser
+/V3/usr/libexec/installed-tests/json-glib-1.0/path
+/V3/usr/libexec/installed-tests/json-glib-1.0/reader
+/V3/usr/libexec/installed-tests/json-glib-1.0/serialize-complex
+/V3/usr/libexec/installed-tests/json-glib-1.0/serialize-full
+/V3/usr/libexec/installed-tests/json-glib-1.0/serialize-simple
 /usr/libexec/installed-tests/json-glib-1.0/array
 /usr/libexec/installed-tests/json-glib-1.0/boxed
 /usr/libexec/installed-tests/json-glib-1.0/builder
